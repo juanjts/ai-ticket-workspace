@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY prisma ./prisma/
+COPY prisma.config.ts ./
 RUN npx prisma generate
 
 COPY tsconfig.json ./
@@ -21,6 +22,7 @@ COPY package*.json ./
 RUN npm ci --production
 
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/dist ./dist
 
