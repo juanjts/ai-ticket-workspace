@@ -1,0 +1,10 @@
+node_modules
+.env
+.svelte-kit
+.git
+dist
+build
+.gitignore
+AGENTS.md
+PROJECT_CONTEXT.md
+README.md
