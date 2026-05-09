@@ -44,7 +44,7 @@
     {/each}
   </div>
 
-  <form onSubmit={handleSubmit} class="flex gap-2">
+  <form onsubmit={handleSubmit} class="flex gap-2">
     <input
       type="text"
       bind:value={content}

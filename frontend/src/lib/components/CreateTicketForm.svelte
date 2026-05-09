@@ -32,7 +32,7 @@
   }
 </script>
 
-<form onSubmit={handleSubmit} class="space-y-4 rounded-lg border p-6">
+<form onsubmit={handleSubmit} class="space-y-4 rounded-lg border p-6">
   <h2 class="text-lg font-semibold">New Ticket</h2>
 
   {#if error}

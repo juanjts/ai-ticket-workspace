@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { getTickets } from '$lib/services/api';
   import type { Ticket } from '$lib/services/api';
   import TicketCard from '$lib/components/TicketCard.svelte';
@@ -9,6 +9,7 @@
   let loading = $state(true);
   let error = $state('');
   let showForm = $state(false);
+  let intervalId: ReturnType<typeof setInterval> | null = null;
 
   async function load() {
     loading = true;
@@ -22,19 +23,58 @@
     }
   }
 
+  function hasPendingAi(): boolean {
+    return tickets.some((t) => t.aiStatus === 'PENDING' || t.aiStatus === 'PROCESSING');
+  }
+
+  function startPollingIfNeeded() {
+    if (hasPendingAi()) {
+      if (!intervalId) {
+        intervalId = setInterval(async () => {
+          try {
+            tickets = await getTickets();
+            if (!hasPendingAi() && intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
+          } catch {
+            // silent retry
+          }
+        }, 3000);
+      }
+    } else {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+  }
+
   function handleCreated() {
     showForm = false;
     load();
   }
 
-  onMount(load);
+  onMount(() => {
+    load();
+  });
+
+  $effect(() => {
+    if (tickets.length > 0) {
+      startPollingIfNeeded();
+    }
+  });
+
+  onDestroy(() => {
+    if (intervalId) clearInterval(intervalId);
+  });
 </script>
 
 <div class="mx-auto max-w-4xl space-y-6 p-6">
   <div class="flex items-center justify-between">
     <h1 class="text-2xl font-bold">Tickets</h1>
     <button
-      onClick={() => (showForm = !showForm)}
+      onclick={() => (showForm = !showForm)}
       class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
     >
       {showForm ? 'Close' : '+ New Ticket'}

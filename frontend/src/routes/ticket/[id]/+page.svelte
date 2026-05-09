@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { getTicket, updateTicket } from '$lib/services/api';
   import type { Ticket } from '$lib/services/api';
   import CommentSection from '$lib/components/CommentSection.svelte';
@@ -12,6 +12,7 @@
   let newStatus = $state('');
   let newOwner = $state('');
   let updating = $state(false);
+  let intervalId: ReturnType<typeof setInterval> | null = null;
 
   async function load() {
     loading = true;
@@ -26,6 +27,29 @@
       error = err.message ?? 'Failed to load ticket';
     } finally {
       loading = false;
+    }
+  }
+
+  function startPollingIfNeeded() {
+    if (ticket && (ticket.aiStatus === 'PENDING' || ticket.aiStatus === 'PROCESSING')) {
+      if (!intervalId) {
+        intervalId = setInterval(async () => {
+          try {
+            const updated = await getTicket(params.id as string);
+            ticket = updated;
+            newStatus = updated.status;
+            newOwner = updated.owner ?? '';
+            if (updated.aiStatus === 'COMPLETED' || updated.aiStatus === 'FAILED') {
+              if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+              }
+            }
+          } catch {
+            // silent retry
+          }
+        }, 3000);
+      }
     }
   }
 
@@ -45,6 +69,16 @@
   }
 
   onMount(load);
+
+  $effect(() => {
+    if (ticket) {
+      startPollingIfNeeded();
+    }
+  });
+
+  onDestroy(() => {
+    if (intervalId) clearInterval(intervalId);
+  });
 </script>
 
 <div class="mx-auto max-w-3xl space-y-6 p-6">
@@ -115,7 +149,7 @@
             class="rounded border px-3 py-2 text-sm"
           />
           <button
-            onClick={handleUpdate}
+            onclick={handleUpdate}
             disabled={updating}
             class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
           >
