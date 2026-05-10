@@ -17,4 +17,4 @@ COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 3000
 
-CMD ["node", "build/index.js"]
+CMD sh -c "echo 'Frontend: http://localhost:5173' && echo 'Backend API: http://localhost:3000' && node build/index.js"
