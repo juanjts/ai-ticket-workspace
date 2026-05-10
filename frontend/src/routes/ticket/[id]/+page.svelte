@@ -136,7 +136,7 @@
         <div class="flex flex-wrap gap-3">
           <select
             bind:value={newStatus}
-            class="rounded border px-3 py-2 text-sm"
+            class="rounded border px-3 py-2 text-sm min-w-[130px]"
           >
             <option value="OPEN">OPEN</option>
             <option value="IN_PROGRESS">IN PROGRESS</option>
@@ -150,7 +150,7 @@
           />
           <button
             onclick={handleUpdate}
-            disabled={updating}
+            disabled={updating || !newOwner.trim()}
             class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
           >
             {updating ? 'Saving...' : 'Save'}
