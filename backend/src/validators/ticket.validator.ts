@@ -18,8 +18,8 @@ export function validateUpdateTicket(body: any): string | null {
   if (body.status && !['OPEN', 'IN_PROGRESS', 'RESOLVED'].includes(body.status)) {
     return 'Invalid status value';
   }
-  if (body.owner !== undefined && typeof body.owner !== 'string') {
-    return 'owner must be a string';
+  if (!body.owner || typeof body.owner !== 'string' || body.owner.trim().length < 1) {
+    return 'owner is required and must be a non-empty string';
   }
   return null;
 }

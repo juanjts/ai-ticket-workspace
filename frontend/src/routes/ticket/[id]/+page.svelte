@@ -13,6 +13,9 @@
   let newOwner = $state('');
   let updating = $state(false);
   let intervalId: ReturnType<typeof setInterval> | null = null;
+  let canSave = $derived(
+    !!ticket && newOwner.trim().length >= 1 && (newStatus !== ticket.status || newOwner !== (ticket.owner ?? ''))
+  );
 
   async function load() {
     loading = true;
@@ -59,7 +62,7 @@
     try {
       ticket = await updateTicket(ticket.id, {
         status: newStatus,
-        owner: newOwner || undefined,
+        owner: newOwner,
       });
     } catch (err: any) {
       error = err.message ?? 'Failed to update ticket';
@@ -150,7 +153,7 @@
           />
           <button
             onclick={handleUpdate}
-            disabled={updating || !newOwner.trim()}
+            disabled={updating || !canSave}
             class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
           >
             {updating ? 'Saving...' : 'Save'}
