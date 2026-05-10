@@ -43,7 +43,7 @@
     <p class="mb-2 text-xs italic text-gray-500">{ticket.summary}</p>
   {/if}
 
-  <div class="flex items-center justify-between text-xs">
+  <div class="flex items-center gap-2 text-xs">
     <span>
       category:
       <span class="ml-1 rounded px-2 py-0.5 {categoryColors[ticket.category] ?? ''}">{ticket.category}</span>
@@ -54,11 +54,13 @@
     </span>
   </div>
 
-  <p class="mt-2 text-xs text-gray-400">
-    {new Date(ticket.createdAt).toLocaleString()}
-    {#if ticket.owner}
-      &middot; {ticket.owner}
-    {/if}
-    &middot; AI: {aiLabel(ticket.aiStatus)}
-  </p>
+  <div class="mt-2 flex justify-between text-xs text-gray-400">
+    <span>
+      {new Date(ticket.createdAt).toLocaleString()}
+      {#if ticket.owner}
+        &middot; {ticket.owner}
+      {/if}
+    </span>
+    <span>AI: {aiLabel(ticket.aiStatus)}</span>
+  </div>
 </a>
