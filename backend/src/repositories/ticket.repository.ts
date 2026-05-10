@@ -22,6 +22,7 @@ export async function create(data: CreateTicketInput) {
       requestText: data.requestText,
       attachmentUrl: data.attachmentUrl ?? null,
     },
+    include: { comments: true },
   });
 }
 
@@ -29,6 +30,7 @@ export async function update(id: string, data: UpdateTicketInput) {
   return prisma.ticket.update({
     where: { id },
     data,
+    include: { comments: { orderBy: { createdAt: 'asc' } } },
   });
 }
 

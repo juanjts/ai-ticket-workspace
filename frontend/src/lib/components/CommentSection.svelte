@@ -9,7 +9,7 @@
   let localComments = $state<Comment[]>([]);
 
   $effect(() => {
-    localComments = _comments;
+    localComments = _comments ?? [];
   });
 
   async function handleSubmit(e: Event) {
