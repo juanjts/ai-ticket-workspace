@@ -497,7 +497,7 @@ build
 
 ```env
 DATABASE_URL=
-OPENROUTER_API_KEY=
+AI_API_KEY=
 PORT=
 ```
 
@@ -506,8 +506,8 @@ PORT=
 ## Basic Environment Validation
 
 ```ts
-if (!process.env.OPENROUTER_API_KEY) {
-  throw new Error("Missing OPENROUTER_API_KEY");
+if (!process.env.AI_API_KEY) {
+  throw new Error("Missing AI_API_KEY");
 }
 ```
 

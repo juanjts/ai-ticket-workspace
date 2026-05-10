@@ -92,7 +92,7 @@
   {:else if tickets.length === 0}
     <p class="text-gray-400">No tickets yet. Create one!</p>
   {:else}
-    <div class="grid gap-4 sm:grid-cols-2">
+    <div class="space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]">
       {#each tickets as ticket (ticket.id)}
         <TicketCard {ticket} />
       {/each}

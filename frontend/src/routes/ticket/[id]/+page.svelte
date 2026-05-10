@@ -95,7 +95,7 @@
           <h1 class="text-2xl font-bold">{ticket.customerName}</h1>
           <p class="mt-1 text-sm text-gray-500">Created {new Date(ticket.createdAt).toLocaleString()}</p>
         </div>
-        <span class="shrink-0 text-xs">AI: {ticket.aiStatus}</span>
+        <span class="shrink-0 text-xs text-gray-400">AI: {ticket.aiStatus === 'FAILED' ? 'Partial' : ticket.aiStatus}</span>
       </div>
 
       <div class="mb-4 space-y-2">

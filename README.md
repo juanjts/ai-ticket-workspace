@@ -49,7 +49,7 @@ git clone <repo-url>
 cd ai-ticket-workspace
 
 # 2. Set your OpenRouter API key
-echo "OPENROUTER_API_KEY=your_key_here" >> .env
+echo "AI_API_KEY=your_key_here" >> .env
 
 # 3. Start everything
 docker compose up --build
@@ -65,7 +65,9 @@ The application will be available at:
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `DATABASE_URL` | Yes | `postgresql://postgres:postgres@localhost:5432/ai_ticket_workspace` | PostgreSQL connection string |
-| `OPENROUTER_API_KEY` | Yes | — | OpenRouter API key for AI classification |
+| `AI_API_KEY` | Yes | — | API key for AI classification (OpenRouter, Groq, etc.) |
+| `AI_BASE_URL` | No | `https://api.groq.com/openai/v1` | Base URL for the AI API |
+| `AI_MODEL` | No | `openai/gpt-oss-20b` | Model name for ticket classification |
 | `PORT` | No | `3000` | Backend server port |
 | `PUBLIC_API_URL` | No | `http://localhost:3000` | Backend URL (frontend uses this) |
 | `POSTGRES_USER` | No | `postgres` | PostgreSQL user |

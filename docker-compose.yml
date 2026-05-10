@@ -21,7 +21,9 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/ai_ticket_workspace?schema=public}
-      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      AI_API_KEY: ${AI_API_KEY}
+      AI_BASE_URL: ${AI_BASE_URL:-https://api.groq.com/openai/v1}
+      AI_MODEL: ${AI_MODEL:-openai/gpt-oss-20b}
       PORT: ${PORT:-3000}
     depends_on:
       postgres:

@@ -1,11 +1,11 @@
 import * as ticketRepo from '../repositories/ticket.repository';
-import { OpenRouterProvider } from '../providers/ai/openrouter.provider';
+import { OpenAIProvider } from '../providers/ai/openai.provider';
 
 export async function classifyTicket(ticketId: string) {
   try {
     await ticketRepo.updateAiFields(ticketId, { aiStatus: 'PROCESSING' });
 
-    const provider = new OpenRouterProvider();
+    const provider = new OpenAIProvider();
     const ticket = await ticketRepo.findById(ticketId);
     if (!ticket) return;
 
@@ -19,6 +19,6 @@ export async function classifyTicket(ticketId: string) {
     });
   } catch (err) {
     console.error('[AI Classification Failed]', err);
-    await ticketRepo.updateAiFields(ticketId, { aiStatus: 'FAILED' });
+    await ticketRepo.updateAiFields(ticketId, { aiStatus: 'FAILED', priority: 'MEDIUM' });
   }
 }

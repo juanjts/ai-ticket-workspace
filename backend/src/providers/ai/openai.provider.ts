@@ -13,31 +13,31 @@ Return ONLY valid JSON with this structure:
   "summary": "short summary"
 }`;
 
-export class OpenRouterProvider implements AIProvider {
+export class OpenAIProvider implements AIProvider {
   private client: OpenAI;
 
   constructor() {
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    const apiKey = process.env.AI_API_KEY;
     if (!apiKey) {
-      throw new Error('Missing OPENROUTER_API_KEY');
+      throw new Error('Missing AI_API_KEY');
     }
 
     this.client = new OpenAI({
-      baseURL: 'https://openrouter.ai/api/v1',
+      baseURL: process.env.AI_BASE_URL || 'https://api.groq.com/openai/v1',
       apiKey,
     });
   }
 
   async classifyTicket(requestText: string): Promise<ClassificationResult> {
     const completion = await this.client.chat.completions.create({
-      model: 'openai/gpt-4o-mini',
+      model: process.env.AI_MODEL || 'openai/gpt-oss-20b',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: requestText },
       ],
       response_format: { type: 'json_object' },
       temperature: 0.3,
-      max_tokens: 200,
+      max_tokens: 1000,
     });
 
     const content = completion.choices[0]?.message?.content;
