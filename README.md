@@ -39,7 +39,7 @@ This ensures resilience — AI failures never block ticket creation.
 ## Prerequisites
 
 - Docker and Docker Compose
-- An OpenRouter API key ([get one free](https://openrouter.ai/))
+- An API key for any OpenAI-compatible provider (OpenAI, Groq, OpenRouter, etc.)
 
 ## Quick Start
 
@@ -48,8 +48,9 @@ This ensures resilience — AI failures never block ticket creation.
 git clone <repo-url>
 cd ai-ticket-workspace
 
-# 2. Set your OpenRouter API key
-echo "AI_API_KEY=your_key_here" >> .env
+# 2. Create `.env` from `.env.example` and configure your AI_API_KEY
+cp .env.example .env
+# Then edit `.env` and set your AI_API_KEY
 
 # 3. Start everything
 docker compose up --build
@@ -59,6 +60,40 @@ The application will be available at:
 - **Frontend:** http://localhost:5173
 - **Backend API:** http://localhost:3000
 - **Health check:** http://localhost:3000/health
+
+## Test Scenarios
+
+The following test cases validate AI classification. Create each ticket via the UI or API and verify the assigned category, priority, and summary.
+
+### Test 1: Operational Urgency
+
+Detects immediate work-blocking language.
+
+- **Customer:** Logística del Norte S.A.
+- **Request:** "The warehouse dispatch system is down. We have 4 trucks waiting at the gate and cannot print route sheets. If they don't leave within 20 minutes, we will lose the cold chain."
+- **Expected:** Category `OPERATIONS` — Priority `HIGH`
+
+### Test 2: Legal / Administrative Request
+
+Distinguishes technical issues from compliance or contract matters.
+
+- **Customer:** Martín Vizcarra
+- **Request:** "I need the team to review the terms and conditions of the new lease agreement for the Medellín office. There is a termination clause that is unclear and the legal department has not yet approved it."
+- **Expected:** Category `LEGAL` — Priority `MEDIUM`
+
+### Test 3: Payment / Finance Inquiry
+
+Verifies classification toward accounting/finance.
+
+- **Customer:** Inversiones Gómez
+- **Request:** "Hello, we have not yet received the payment receipt for invoice #8892 that was due last Friday. Please confirm whether the transfer has been approved by the bank or if any information from us is still needed."
+- **Expected:** Category `FINANCE` — Priority `LOW` / `MEDIUM`
+
+### Test 4: Supply Management (Procurement)
+
+- **Customer:** Suministros Industriales SAS
+- **Request:** "The stock of safety helmets and nitrile gloves is below 5%. We need to open a bidding process to find a new supplier that meets ISO standards, since the previous one raised prices by 20% without notice. The purchasing process must start before Monday."
+- **Expected:** Category `PROCUREMENT` — Priority `MEDIUM` / `HIGH`
 
 ## Environment Variables
 
